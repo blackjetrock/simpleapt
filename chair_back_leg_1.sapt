@@ -1,0 +1,81 @@
+# Back leg of chair
+#
+#
+
+value len = 450
+value height = 1200
+value thick = 42
+
+tooldia 40.0
+# Nominal start point
+point p1 = 0 0
+
+# Cutter compensated start point
+point p1a = -1.5 -1.5
+
+# Point at seat height
+point p2 = $len 0
+
+# Point at top height
+point p3 = $height 0
+
+# vertical lines from three height points	
+#
+#
+line _cons_p1v = through p1 at angle 90
+line _cons_p2v = through p2 at angle 90
+line _cons_p3v = through p3 at angle 90
+
+# Toolpath points
+point tp1 = point p1a
+point tp2 = point p2
+
+line _cons_l1 = through p2 at angle 12 degrees
+line l2 = through p1 and p2
+line _cons_l3 = through p3 at angle 90
+line _cons_l6 = through p2 at angle 90
+line _cons_l7 = through p1 at angle 90
+
+point p4 = intersection of _cons_l1 and _cons_l3
+line l4 = through p2 and p4
+
+vector v1 = point p3 to p4
+
+line _cons_l5 = parallel to l4 distance $thick side left
+line _cons_l6 = parallel to l2 distance $thick side left
+
+point p5 = intersection of _cons_l3 and _cons_l5
+point p6 = intersection of _cons_l5 and _cons_l6
+point p7 = intersection of _cons_l6 and _cons_l7
+
+toolpath leg
+
+feed 40
+
+start at p1a
+
+
+limit line after l4
+go right to p2
+
+limit line after _cons_l3
+go right to p4
+
+limit line after _cons_l5
+go right to p5
+
+limit line before _cons_l6
+go right to p6
+
+limit line after _cons_p1v
+go right to p7
+
+limit line after l2
+go right to p1
+
+endpath
+
+cutpath leg with z from 0.0 to -36.0 step -5.0
+
+
+
